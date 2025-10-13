@@ -18,7 +18,7 @@
             --color-shadow-primary: rgba(220, 20, 60, 0.8);
             --color-shadow-secondary: rgba(255, 182, 193, 0.8);
             --color-gold: #ffd700; /* Dourado para as "estrelas" */
-            --color-green-palmeiras: #006400; /* Verde escuro do Palmeiras */
+            --color-green-palmeiras: #00FF00; /* Verde limao do Palmeiras*/
             --color-shadow-green: rgba(0, 100, 0, 0.8); /* Sombra verde */
             
             /* NOVAS CORES para os botões finais */
@@ -133,11 +133,11 @@
             font-weight: bold;
             transition: all 0.3s ease;
             box-shadow: 0 0 10px var(--color-shadow-primary);
-            /* LARGURA REDUZIDA EM 30% DO VALOR ANTERIOR (50% -> 35%) E CENTRALIZADA */
-            width: 35%;             
-            display: block;         
-            margin-left: auto;      
-            margin-right: auto;     
+            /* LARGURA REDUZIDA E CENTRALIZADA */
+            width: 35%; 
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto; 
         }
 
         .btn:hover {
@@ -171,35 +171,66 @@
             max-width: 900px;
             position: relative;
             z-index: 10;
-            padding-bottom: 50px; 
+            perspective: 1000px; 
+            /* MODIFICADO: Aumentei o padding-bottom para dar espaço ao indicador */
+            padding-bottom: 70px; 
+            /* Importante: Definir uma altura mínima para o contêiner base */
+            min-height: 60vh; 
         }
 
         .carousel-item, .text-slide {
             display: none; 
             text-align: center;
-            position: absolute;
+            position: absolute; /* Mantenha sempre absoluto */
             width: 100%;
-            top: 0;
             left: 0;
             padding: 10px;
+            backface-visibility: hidden; 
+            
+            /* CENTRALIZAÇÃO PERMANENTE (Verticalmente) */
+            top: 50%;
+            /* Inicializa o transform com a centralização vertical */
+            transform: translateY(-50%); 
+            
+            /* O slide deve começar escondido (opacity 0) e só a animação ou a classe .active-slide o revela */
             opacity: 0;
-            animation-name: fade;
-            animation-duration: 0.8s;
         }
 
         .active-slide {
             display: block; 
             opacity: 1;
-            position: relative; 
+            z-index: 2; /* Slide ativo deve estar em cima do que está esperando */
+            
+            /* O slide ativo é apenas a posição final centralizada */
+            position: absolute; 
+            transform: translateY(-50%) translateX(0) rotate(0deg); /* Posição centralizada final */
         }
 
         .carousel-item img {
             width: 100%;
             max-height: 70vh;
-            object-fit: contain;
-            border-radius: 10px;
-            box-shadow: 0 0 20px var(--color-shadow-primary);
+            object-fit: contain; /* Garante que a imagem se encaixe sem cortar */
             margin-bottom: 15px;
+            
+            border-radius: 10px; /* Mantém o canto arredondado da imagem */
+            
+            border: none; 
+            padding: 0; 
+            background-color: transparent; 
+            transition: none; 
+
+            /* ALTERAÇÃO FINAL: Usando drop-shadow para a sombra acompanhar o conteúdo visível */
+            /* filter: drop-shadow(Offset-x Offset-y Blur-Radius Color) */
+            filter: drop-shadow(0 0 15px rgba(220, 20, 60, 0.6)); 
+            
+            /* REMOVIDO: box-shadow (agora substituído por filter) */
+            /* box-shadow: 0 0 15px rgba(220, 20, 60, 0.6); */
+        }
+
+        /* Estilo específico para a foto 7 */
+        .carousel-item:nth-child(7) img {
+            /* ALTERAÇÃO FINAL: Usando drop-shadow para a foto 7 também */
+            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.6)); /* Sombra verde limão */
         }
 
         .caption {
@@ -225,11 +256,91 @@
             font-size: 1.3rem;
             line-height: 1.6;
         }
+        
+        /* ---------------------------------------------------- */
+        /* ANIMAÇÕES "SLIDE LATERAL" COM ROTAÇÃO (Efeito Cartinha) */
+        /* ---------------------------------------------------- */
+        
+        /* O slide que ENTRA */
+        .slide-in-right { 
+            animation: slide-in-right 0.8s ease-out forwards;
+            z-index: 3; 
+            display: block !important;
+        }
+
+        .slide-in-left { 
+            animation: slide-in-left 0.8s ease-out forwards;
+            z-index: 3; 
+            display: block !important;
+        }
+
+        /* O slide que SAI */
+        .slide-out-left { 
+            animation: slide-out-left 0.8s ease-in forwards;
+            z-index: 4; 
+            display: block !important;
+        }
+        
+        .slide-out-right { 
+            animation: slide-out-right 0.8s ease-in forwards;
+            z-index: 4; 
+            display: block !important;
+        }
+
+        @keyframes slide-in-right {
+            from {
+                /* Gira ligeiramente ao entrar pela direita */
+                transform: translateY(-50%) translateX(100%) rotate(5deg); 
+                opacity: 0.5;
+            }
+            to {
+                transform: translateY(-50%) translateX(0) rotate(0deg); 
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slide-in-left {
+            from {
+                /* Gira ligeiramente ao entrar pela esquerda */
+                transform: translateY(-50%) translateX(-100%) rotate(-5deg); 
+                opacity: 0.5;
+            }
+            to {
+                transform: translateY(-50%) translateX(0) rotate(0deg); 
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide-out-left {
+            from {
+                transform: translateY(-50%) translateX(0) rotate(0deg); 
+                opacity: 1;
+            }
+            to {
+                /* Gira ligeiramente ao sair pela esquerda */
+                transform: translateY(-50%) translateX(-100%) rotate(-5deg); 
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes slide-out-right {
+            from {
+                transform: translateY(-50%) translateX(0) rotate(0deg); 
+                opacity: 1;
+            }
+            to {
+                /* Gira ligeiramente ao sair pela direita */
+                transform: translateY(-50%) translateX(100%) rotate(5deg); 
+                opacity: 0.5;
+            }
+        }
+
 
         /* Indicador de Swipe */
         #swipe-indicator {
             position: absolute;
-            bottom: 0;
+            /* Deslocado para baixo */
+            bottom: -70px; 
             left: 50%;
             transform: translateX(-50%);
             color: var(--color-secondary);
@@ -241,18 +352,13 @@
             align-items: center;
             gap: 10px;
             animation: pulse-swipe 1.5s infinite;
+            z-index: 10;
         }
         
         @keyframes pulse-swipe {
             0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
             50% { transform: translateX(-50%) scale(1.05); opacity: 1; }
             100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
-        }
-
-        /* Animação de Fade */
-        @keyframes fade {
-            from { opacity: 0.4; }
-            to { opacity: 1; }
         }
 
         /* ---------------------------------------------------- */
@@ -286,7 +392,7 @@
             align-items: center;
             justify-content: center;
             
-            width: 150px;          /* Mantém o tamanho fixo para os botões de SIM/NÃO */
+            width: 150px; 
             max-width: none; 
             
             position: static !important; /* Anula o position absolute da fuga do NÃO */
@@ -415,7 +521,7 @@
     </div>
 
     <div class="carousel-container">
-        <div class="carousel-item">
+        <div class="carousel-item active-slide">
             <img src="media/foto1.jpg" alt="Foto 1">
             <p class="caption">Nosso primeiro encontro ❤️</p>
         </div>
@@ -458,7 +564,7 @@
 
         <div class="text-slide">
             <h2 class="glow-text">O Início</h2>
-            <p>Seu jeito me encantou desde o primeiro instante. Você é a pessoa que eu não sabia que procurava, mas que me completou de todas as formas possíveis.</p>
+            <p>Seu jeito me encantou desde o primeiro instante. Você é a pessoa que eu não sabia que procurava, mas somou de todas as formas possíveis.</p>
         </div>
         <div class="text-slide">
             <h2 class="glow-text">Nossa Jornada</h2>
@@ -466,20 +572,23 @@
         </div>
         <div class="text-slide">
             <h2 class="glow-text">Meu Amor</h2>
-            <p>Você é meu lar, minha paz, minha aventura. Com você, eu quero planejar e viver todos os futuros que pudermos imaginar. Eu te amo muito!</p>
+            <p>A nossa história é muito grande para ser contada em apenas 10 fotos, então...</p>
         </div>
         <div class="text-slide">
             <h2 class="glow-text">O Próximo Passo</h2>
             <p>Depois de tudo isso, só me resta fazer a pergunta que não sai da minha cabeça...</p>
         </div>
+        <div class="text-slide">
+            <h2>E se...<h2>
+        </div>
 
         <div id="swipe-indicator">
-            <span>&#10094;</span> ARRASTE PARA CONTINUAR <span>&#10095;</span>
+            <span>&#10094;</span> ARRASTE <span>&#10095;</span>
         </div>
     </div>
 
     <div id="final" class="screen">
-        <h2 id="final-question">A gente dar um beijinho? Só pra ver como vai ser!</h2>
+        <h2 id="final-question">A gente dar um beijinho?<br>Só pra ver como vai ser!</h2>
         
         <div class="final-buttons-wrapper">
             <button id="sim-btn" class="btn">SIM! ❤️</button>
@@ -505,7 +614,9 @@
         const SWIPE_INDICATOR = document.getElementById('swipe-indicator');
         const FINAL_BUTTONS_WRAPPER = document.querySelector('.final-buttons-wrapper'); 
 
-        let currentIndex = 0;
+        // Definindo o index inicial para o primeiro slide.
+        let currentIndex = 0; 
+        
         const totalSlides = CAROUSEL_ITEMS.length;
         const FINAL_SCREEN_INDEX = totalSlides;
         let naoButtonCanMove = true;
@@ -530,23 +641,20 @@
             
             AUDIO.play().catch(e => console.log("Áudio não pôde ser reproduzido automaticamente.", e));
             
-            showItem(currentIndex);
+            // O primeiro item já está com 'active-slide' e deve ser o único visível
+            showItem(currentIndex); // Chamada para atualizar o indicador de swipe (e tema, se necessário)
         });
 
         function showItem(index) {
-            CAROUSEL_ITEMS.forEach((item, i) => {
-                item.classList.remove('active-slide');
-            });
+             // Função auxiliar que só atualiza o tema e o indicador
+            updateTheme(index);
+        }
 
-            if (index < totalSlides) {
-                CAROUSEL_ITEMS[index].classList.add('active-slide');
-                currentIndex = index;
-            }
+        function updateTheme(index) {
+             const body = document.body;
+             const root = document.documentElement; 
 
-            const body = document.body;
-            const root = document.documentElement; 
-
-            if (currentIndex === 6) { 
+            if (index === 6) { 
                 root.style.setProperty('--current-heart-color', 'var(--color-green-palmeiras)');
                 body.classList.add('green-theme'); 
             } else {
@@ -554,26 +662,75 @@
                 body.classList.remove('green-theme');
             }
 
-            if (currentIndex === totalSlides - 1) {
-                SWIPE_INDICATOR.innerHTML = 'FIM DA HISTÓRIA! &#10095;';
-            } else if (currentIndex === 0) {
-                 SWIPE_INDICATOR.innerHTML = 'ARRASTE PARA CONTINUAR &#10095;';
+            if (index === totalSlides - 1) {
+                SWIPE_INDICATOR.innerHTML = '&#10094; ARRASTE &#10095;';
+            } else if (index === 0) {
+                // MODIFICADO: Alterado de 'ARRASTE PARA CONTINUAR' para 'ARRASTE'
+                SWIPE_INDICATOR.innerHTML = 'ARRASTE &#10095;'; 
             } else {
                  SWIPE_INDICATOR.innerHTML = '&#10094; ARRASTE &#10095;';
             }
         }
-
-        function changeSlide(n) {
+        
+        // CÓDIGO DA TRANSIÇÃO CORRIGIDO
+        function changeSlide(n) { // 'n' será 1 para avançar, -1 para retroceder
             const nextIndex = currentIndex + n;
-
-            if (nextIndex < 0) {
+            
+            if (nextIndex < 0) { // Não permite voltar antes do primeiro slide
                 return;
-            } else if (nextIndex >= totalSlides) {
+            } else if (nextIndex >= totalSlides) { // Vai para a tela final
                 showFinalScreen();
-            } else {
-                showItem(nextIndex);
+                return;
             }
+            
+            const currentItem = CAROUSEL_ITEMS[currentIndex];
+            const nextItem = CAROUSEL_ITEMS[nextIndex];
+
+            // 1. Limpeza de todas as classes de animação e mantém todos os slides visíveis 
+            // no DOM, mas a opacidade 0 do estilo base os esconde.
+            CAROUSEL_ITEMS.forEach(item => {
+                item.classList.remove('active-slide', 'slide-in-right', 'slide-in-left', 'slide-out-left', 'slide-out-right');
+                item.style.display = 'block'; // Mantenha no DOM
+            });
+            
+            // 2. Determina as classes de animação com base na direção (n)
+            let currentOutClass, nextInClass;
+
+            if (n > 0) { // Avançando (próximo slide)
+                currentOutClass = 'slide-out-left'; // O atual sai para a esquerda
+                nextInClass = 'slide-in-right';    // O próximo entra pela direita
+            } else { // Retrocedendo (slide anterior)
+                currentOutClass = 'slide-out-right'; // O atual sai para a direita
+                nextInClass = 'slide-in-left';      // O próximo entra pela esquerda
+            }
+
+            // 3. Configura o próximo item para a animação de entrada
+            nextItem.classList.add(nextInClass);
+
+            // 4. Configura o item atual para a animação de saída
+            currentItem.classList.add(currentOutClass); 
+            
+            // 5. Atualiza o índice
+            currentIndex = nextIndex;
+            
+            // 6. Usa o 'animationend' no slide que está ENTRANDO para limpar e finalizar.
+            nextItem.addEventListener('animationend', function handler() {
+                // O slide que entrou é o novo 'active-slide'
+                nextItem.classList.remove(nextInClass); 
+                nextItem.classList.add('active-slide');
+                
+                // O slide que saiu deve ser escondido
+                currentItem.style.display = 'none';
+                currentItem.classList.remove(currentOutClass); 
+                
+                nextItem.removeEventListener('animationend', handler); 
+            }, { once: true }); 
+            
+            // 7. Atualiza o tema e o indicador de swipe
+            updateTheme(currentIndex);
         }
+        // FIM DO CÓDIGO DA TRANSIÇÃO CORRIGIDO
+
 
         function showFinalScreen() {
             CAROUSEL_CONTAINER.style.display = 'none';
@@ -631,9 +788,11 @@
             
             if (Math.abs(diff) < SWIPE_THRESHOLD) return; 
 
+            // Se a diferença for positiva (arrastando da direita para a esquerda)
             if (diff > 0) {
                 changeSlide(1);
             } else {
+                // Se a diferença for negativa (arrastando da esquerda para a direita)
                 changeSlide(-1);
             }
             
@@ -742,7 +901,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             startParticleAnimation();
-            document.documentElement.style.setProperty('--current-heart-color', 'var(--color-primary)');
+            updateTheme(currentIndex); // Garantir que o tema inicial seja aplicado
         });
     </script>
 </body>
