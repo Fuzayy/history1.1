@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um Presente Especial</title>
+    <style>
+        /*
+         * 1. Estrutura e Estilo Base (CSS)
+         */
+
+        :root {
+            /* Cores */
+            --color-background: #000;
+            --color-primary: #dc143c; /* Carmesim (Destaque Principal - Originalmente botões e corações) */
+            --color-secondary: #ffb6c1; /* Rosa Claro (Destaque Secundário) */
+            --color-text: #f0f0f0;
+            --color-shadow-primary: rgba(220, 20, 60, 0.8);
+            --color-shadow-secondary: rgba(255, 182, 193, 0.8);
+            --color-gold: #ffd700; /* Dourado para as "estrelas" */
+            --color-green-palmeiras: #006400; /* Verde escuro do Palmeiras */
+            --color-shadow-green: rgba(0, 100, 0, 0.8); /* Sombra verde */
+            
+            /* NOVAS CORES para os botões finais */
+            --color-sim-btn: var(--color-green-palmeiras); /* Botão SIM começa verde */
+            --color-nao-btn: var(--color-primary); /* Botão NÃO começa vermelho */
+            --color-nao-fugitivo: #666; /* Cor CINZA para o botão NÃO fugitivo */
+            --color-shadow-nao-fugitivo: rgba(102, 102, 102, 0.8); /* Sombra CINZA */
+
+            --current-heart-color: var(--color-primary); /* Variável CSS para a cor do coração */
+        }
+
+        /* Reset Básico */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden; 
+            position: relative;
+        }
+
+        /* Efeito de Brilho (Glow Effect) para Títulos e Botões */
+        h1, h2, .glow-text {
+            text-shadow: 0 0 5px var(--color-shadow-primary), 0 0 10px var(--color-primary), 0 0 15px var(--color-primary);
+        }
+
+        /* ---------------------------------------------------- */
+        /* Sistema de Partículas Flutuantes (.heart-bg) */
+        /* ---------------------------------------------------- */
+        #heart-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; 
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            bottom: 0;
+            display: block;
+            opacity: 0;
+            animation: float-soft linear infinite;
+            text-shadow: 0 0 5px currentColor, 0 0 15px currentColor;
+        }
+
+        .particle.heart {
+            color: var(--current-heart-color); 
+            font-size: 1.5rem; 
+        }
+
+        .particle.star {
+            color: var(--color-gold);
+            font-size: 1rem; 
+        }
+        
+        @keyframes float-soft {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* ---------------------------------------------------- */
+        /* Estilos Comuns de Layout */
+        /* ---------------------------------------------------- */
+        .screen {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; 
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Botão Padrão */
+        .btn {
+            background-color: var(--color-primary); 
+            color: var(--color-text);
+            border: none;
+            padding: 15px 15px; 
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--color-shadow-primary);
+            /* LARGURA REDUZIDA EM 30% DO VALOR ANTERIOR (50% -> 35%) E CENTRALIZADA */
+            width: 35%;             
+            display: block;         
+            margin-left: auto;      
+            margin-right: auto;     
+        }
+
+        .btn:hover {
+            background-color: var(--color-secondary);
+            color: var(--color-background);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--color-shadow-secondary), 0 0 25px var(--color-secondary);
+        }
+
+        /* ---------------------------------------------------- */
+        /* A. Tela de Início (#start-screen) */
+        /* ---------------------------------------------------- */
+        #start-screen h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--color-secondary);
+        }
+
+        #start-screen p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+
+        /* ---------------------------------------------------- */
+        /* B. Carrossel de Fotos e Textos (.container) */
+        /* ---------------------------------------------------- */
+        .carousel-container {
+            display: none; 
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 50px; 
+        }
+
+        .carousel-item, .text-slide {
+            display: none; 
+            text-align: center;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            opacity: 0;
+            animation-name: fade;
+            animation-duration: 0.8s;
+        }
+
+        .active-slide {
+            display: block; 
+            opacity: 1;
+            position: relative; 
+        }
+
+        .carousel-item img {
+            width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 0 20px var(--color-shadow-primary);
+            margin-bottom: 15px;
+        }
+
+        .caption {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-style: italic;
+            font-size: 1.1rem;
+            min-height: 50px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .text-slide h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--color-secondary);
+        }
+
+        .text-slide p {
+            font-size: 1.3rem;
+            line-height: 1.6;
+        }
+
+        /* Indicador de Swipe */
+        #swipe-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--color-secondary);
+            font-size: 1.1rem;
+            opacity: 0.8;
+            user-select: none;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: pulse-swipe 1.5s infinite;
+        }
+        
+        @keyframes pulse-swipe {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+            50% { transform: translateX(-50%) scale(1.05); opacity: 1; }
+            100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+        }
+
+        /* Animação de Fade */
+        @keyframes fade {
+            from { opacity: 0.4; }
+            to { opacity: 1; }
+        }
+
+        /* ---------------------------------------------------- */
+        /* C. Tela Final Interativa (#final) */
+        /* ---------------------------------------------------- */
+        #final {
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 20px;
+            width: 100%; 
+        }
+        
+        .final-buttons-wrapper {
+            position: relative; 
+            display: flex;
+            justify-content: center; /* Centraliza o bloco de botões */
+            gap: 20px; /* Garante o espaço entre os botões */
+            width: 100%;
+            max-width: 450px; 
+            min-height: 100px; 
+            margin-top: 10px; 
+            padding: 20px; 
+        }
+        
+        /* Estilos específicos para os botões SIM e NÃO na tela final */
+        .final-buttons-wrapper #sim-btn,
+        .final-buttons-wrapper #nao-btn {
+            margin-top: 0; 
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            
+            width: 150px;          /* Mantém o tamanho fixo para os botões de SIM/NÃO */
+            max-width: none; 
+            
+            position: static !important; /* Anula o position absolute da fuga do NÃO */
+            
+            /* SOBRESCREVE A LARGURA DO .btn GERAL E REMOVE A CENTRALIZAÇÃO DESNECESSÁRIA */
+            margin-left: initial;
+            margin-right: initial;
+        }
+
+        #final-question {
+            font-size: 1.8rem;
+            margin-bottom: 30px; 
+            color: var(--color-secondary);
+            text-shadow: 0 0 5px var(--color-shadow-secondary), 0 0 10px var(--color-secondary);
+            width: 100%;
+        }
+        
+        #sim-btn {
+            background-color: var(--color-sim-btn); 
+            box-shadow: 0 0 10px var(--color-shadow-green);
+        }
+        #sim-btn:hover {
+            background-color: var(--color-green-palmeiras); 
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--color-shadow-green), 0 0 25px var(--color-green-palmeiras);
+        }
+
+        #nao-btn {
+            background-color: var(--color-nao-btn); 
+            box-shadow: 0 0 10px var(--color-shadow-primary);
+            transition: all 0.1s ease-out; 
+        }
+        #nao-btn:hover {
+            background-color: var(--color-primary); 
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--color-shadow-primary), 0 0 25px var(--color-primary);
+        }
+
+        /* Estilo para o botão NAO quando ele está fugindo */
+        .nao-fugitivo-style {
+            background-color: var(--color-nao-fugitivo) !important; 
+            box-shadow: 0 0 10px var(--color-shadow-nao-fugitivo) !important;
+            color: var(--color-text) !important; 
+        }
+
+
+        /* Classe para mudar o tema para verde (da foto 7) */
+        body.green-theme .btn { 
+            background-color: var(--color-green-palmeiras);
+            box-shadow: 0 0 10px var(--color-shadow-green);
+        }
+
+        body.green-theme .btn:hover {
+            background-color: var(--color-primary); 
+            box-shadow: 0 0 15px var(--color-shadow-primary), 0 0 25px var(--color-primary);
+        }
+
+        body.green-theme h1, body.green-theme h2, body.green-theme .glow-text {
+            text-shadow: 0 0 5px var(--color-shadow-green), 0 0 10px var(--color-green-palmeiras), 0 0 15px var(--color-green-palmeiras);
+        }
+
+
+        #sim-final-message {
+            display: none;
+            font-size: 3rem;
+            color: var(--color-secondary);
+            text-shadow: 
+                0 0 10px var(--color-shadow-secondary), 
+                0 0 20px var(--color-secondary), 
+                0 0 30px var(--color-secondary),
+                0 0 40px var(--color-primary);
+            animation: pulse-glow 1.5s infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from { text-shadow: 0 0 10px var(--color-secondary); }
+            to { text-shadow: 0 0 20px var(--color-secondary), 0 0 30px var(--color-primary); }
+        }
+
+        /* Media Query para Responsividade */
+        @media (max-width: 768px) {
+            #start-screen h1 {
+                font-size: 2rem;
+            }
+
+            .carousel-item img {
+                max-height: 60vh;
+            }
+
+            #final-question {
+                font-size: 1.5rem;
+            }
+            
+            .final-buttons-wrapper {
+                 max-width: 90%;
+            }
+            
+            .final-buttons-wrapper #sim-btn,
+            .final-buttons-wrapper #nao-btn {
+                 width: 120px; 
+            }
+            
+            #sim-final-message {
+                font-size: 2rem;
+            }
+            
+            /* Ajuste para o botão INICIAR (e outros botões .btn) em telas pequenas */
+            .btn {
+                 width: 50%; /* Mantido em 50% para telas pequenas para não ficar minúsculo */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="heart-bg"></div>
+    
+    <audio id="story-audio" loop preload="auto">
+        <source src="media/Those_Eyes.mp3" type="audio/mp3">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <div id="start-screen" class="screen">
+        <h1 class="glow-text">Um presente para você!</h1>
+        <p>Prepare-se para reviver alguns dos nossos momentos mais especiais e ler uma mensagem do meu coração.</p>
+        <button id="start-button" class="btn">INICIAR</button>
+    </div>
+
+    <div class="carousel-container">
+        <div class="carousel-item">
+            <img src="media/foto1.jpg" alt="Foto 1">
+            <p class="caption">Nosso primeiro encontro ❤️</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto2.jpg" alt="Foto 2">
+            <p class="caption">Nosso momento no parque 🌸</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto3.jpg" alt="Foto 3">
+            <p class="caption">O dia em que minha mãe viu nós dois juntos ❤️</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto4.jpg" alt="Foto 4">
+            <p class="caption">Os bilhetes dos quais amo tanto 🖋️❤️</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto5.jpg" alt="Foto 5">
+            <p class="caption">Primeiro Almoço especial (hmmm Ravioli)🍝</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto6.jpg" alt="Foto 6">
+            <p class="caption">O primeiro fim de semana fora de casa 💯💋🫣</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto7.jpg" alt="Foto 7">
+            <p class="caption">Nosso lado VERDÃO💚🐷</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto8.jpg" alt="Foto 8">
+            <p class="caption">O dia em que te entreguei um dos itens mais importantes da nossa história💍🌹❤️</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto9.jpg" alt="Foto 9">
+            <p class="caption">Não importa o lugar, quando estamos juntos, é sempre lindo❤️🥁</p>
+        </div>
+        <div class="carousel-item">
+            <img src="media/foto10.jpg" alt="Foto 10">
+            <p class="caption">A mulher que trouxe paz e mais felicidade em cada dia da minha vida🥹❤️</p>
+        </div>
+
+        <div class="text-slide">
+            <h2 class="glow-text">O Início</h2>
+            <p>Seu jeito me encantou desde o primeiro instante. Você é a pessoa que eu não sabia que procurava, mas que me completou de todas as formas possíveis.</p>
+        </div>
+        <div class="text-slide">
+            <h2 class="glow-text">Nossa Jornada</h2>
+            <p>Cada dia ao seu lado é uma nova descoberta e uma nova razão para agradecer. As dificuldades se tornam pequenas e as alegrias, gigantescas.</p>
+        </div>
+        <div class="text-slide">
+            <h2 class="glow-text">Meu Amor</h2>
+            <p>Você é meu lar, minha paz, minha aventura. Com você, eu quero planejar e viver todos os futuros que pudermos imaginar. Eu te amo muito!</p>
+        </div>
+        <div class="text-slide">
+            <h2 class="glow-text">O Próximo Passo</h2>
+            <p>Depois de tudo isso, só me resta fazer a pergunta que não sai da minha cabeça...</p>
+        </div>
+
+        <div id="swipe-indicator">
+            <span>&#10094;</span> ARRASTE PARA CONTINUAR <span>&#10095;</span>
+        </div>
+    </div>
+
+    <div id="final" class="screen">
+        <h2 id="final-question">A gente dar um beijinho? Só pra ver como vai ser!</h2>
+        
+        <div class="final-buttons-wrapper">
+            <button id="sim-btn" class="btn">SIM! ❤️</button>
+            <button id="nao-btn" class="btn">NÃO</button>
+        </div>
+
+        <h1 id="sim-final-message">
+            ❤️É OFICIAL!❤️ <br> ❤️AMO VOCÊ!❤️
+        </h1>
+    </div>
+
+    <script>
+        const START_SCREEN = document.getElementById('start-screen');
+        const CAROUSEL_CONTAINER = document.querySelector('.carousel-container');
+        const FINAL_SCREEN = document.getElementById('final');
+        const START_BUTTON = document.getElementById('start-button');
+        const AUDIO = document.getElementById('story-audio');
+        const CAROUSEL_ITEMS = document.querySelectorAll('.carousel-item, .text-slide');
+        const SIM_BUTTON = document.getElementById('sim-btn');
+        const NAO_BUTTON = document.getElementById('nao-btn');
+        const SIM_FINAL_MESSAGE = document.getElementById('sim-final-message');
+        const HEART_BG = document.getElementById('heart-bg');
+        const SWIPE_INDICATOR = document.getElementById('swipe-indicator');
+        const FINAL_BUTTONS_WRAPPER = document.querySelector('.final-buttons-wrapper'); 
+
+        let currentIndex = 0;
+        const totalSlides = CAROUSEL_ITEMS.length;
+        const FINAL_SCREEN_INDEX = totalSlides;
+        let naoButtonCanMove = true;
+        let particleInterval;
+        const initialNaoText = NAO_BUTTON.textContent; 
+        
+        let isFugindo = false; 
+
+        let touchstartX = 0;
+        let touchendX = 0;
+        const SWIPE_THRESHOLD = 50; 
+        
+        let isDragging = false; 
+
+        /*
+         * Funções de Controle de Fluxo
+         */
+        
+        START_BUTTON.addEventListener('click', () => {
+            START_SCREEN.style.display = 'none';
+            CAROUSEL_CONTAINER.style.display = 'block';
+            
+            AUDIO.play().catch(e => console.log("Áudio não pôde ser reproduzido automaticamente.", e));
+            
+            showItem(currentIndex);
+        });
+
+        function showItem(index) {
+            CAROUSEL_ITEMS.forEach((item, i) => {
+                item.classList.remove('active-slide');
+            });
+
+            if (index < totalSlides) {
+                CAROUSEL_ITEMS[index].classList.add('active-slide');
+                currentIndex = index;
+            }
+
+            const body = document.body;
+            const root = document.documentElement; 
+
+            if (currentIndex === 6) { 
+                root.style.setProperty('--current-heart-color', 'var(--color-green-palmeiras)');
+                body.classList.add('green-theme'); 
+            } else {
+                root.style.setProperty('--current-heart-color', 'var(--color-primary)');
+                body.classList.remove('green-theme');
+            }
+
+            if (currentIndex === totalSlides - 1) {
+                SWIPE_INDICATOR.innerHTML = 'FIM DA HISTÓRIA! &#10095;';
+            } else if (currentIndex === 0) {
+                 SWIPE_INDICATOR.innerHTML = 'ARRASTE PARA CONTINUAR &#10095;';
+            } else {
+                 SWIPE_INDICATOR.innerHTML = '&#10094; ARRASTE &#10095;';
+            }
+        }
+
+        function changeSlide(n) {
+            const nextIndex = currentIndex + n;
+
+            if (nextIndex < 0) {
+                return;
+            } else if (nextIndex >= totalSlides) {
+                showFinalScreen();
+            } else {
+                showItem(nextIndex);
+            }
+        }
+
+        function showFinalScreen() {
+            CAROUSEL_CONTAINER.style.display = 'none';
+            FINAL_SCREEN.style.display = 'flex';
+            
+            SWIPE_INDICATOR.style.display = 'none';
+
+            document.documentElement.style.setProperty('--current-heart-color', 'var(--color-primary)');
+            document.body.classList.remove('green-theme');
+            
+            // Volta o botão NÃO para a posição inicial Flexbox no final da história
+            NAO_BUTTON.style.position = 'static';
+            NAO_BUTTON.style.transform = 'none';
+            NAO_BUTTON.textContent = initialNaoText;
+        }
+
+        /*
+         * Lógica de Swipe/Arrastar
+         */
+        
+        CAROUSEL_CONTAINER.addEventListener('touchstart', e => {
+            e.preventDefault(); 
+            touchstartX = e.changedTouches[0].screenX;
+            isDragging = true;
+        });
+
+        CAROUSEL_CONTAINER.addEventListener('mousedown', e => {
+            e.preventDefault(); 
+            touchstartX = e.screenX;
+            isDragging = true;
+        });
+        
+        CAROUSEL_CONTAINER.addEventListener('mousemove', e => {
+            if (isDragging) {
+                touchendX = e.screenX;
+            }
+        });
+
+        CAROUSEL_CONTAINER.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            isDragging = false;
+            handleGesture();
+        });
+        
+        CAROUSEL_CONTAINER.addEventListener('mouseup', e => {
+            if (isDragging) {
+                 touchendX = e.screenX;
+                 handleGesture();
+            }
+            isDragging = false;
+        });
+
+        function handleGesture() {
+            const diff = touchstartX - touchendX;
+            
+            if (Math.abs(diff) < SWIPE_THRESHOLD) return; 
+
+            if (diff > 0) {
+                changeSlide(1);
+            } else {
+                changeSlide(-1);
+            }
+            
+            touchstartX = 0;
+            touchendX = 0;
+        }
+
+
+        /*
+         * Funções Especiais - Partículas e Botão "Não"
+         */
+        
+        function createParticle() {
+            if (!document.hidden) {
+                const particle = document.createElement('span');
+                const isHeart = Math.random() > 0.4; 
+                
+                particle.classList.add('particle', isHeart ? 'heart' : 'star');
+                particle.innerHTML = isHeart ? '&#10084;' : '&#10029;';
+
+                const size = Math.random() * 20 + 10;
+                const duration = Math.random() * 8 + 5;
+
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.opacity = Math.random() * 0.5 + 0.3;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${-Math.random() * duration}s`;
+
+                HEART_BG.appendChild(particle);
+
+                setTimeout(() => {
+                    particle.remove();
+                }, duration * 1000);
+            }
+        }
+
+        function startParticleAnimation() {
+            particleInterval = setInterval(createParticle, 200); 
+            for (let i = 0; i < 50; i++) {
+                createParticle();
+            }
+        }
+
+        function moveNaoButton() {
+            if (!naoButtonCanMove || isFugindo) return;
+
+            isFugindo = true; 
+            
+            const containerRect = FINAL_BUTTONS_WRAPPER.getBoundingClientRect();
+            
+            const escapeRangeX = containerRect.width * 0.9;
+            const escapeRangeY = containerRect.height * 0.9;
+
+            const newTranslateX = (Math.random() - 0.5) * escapeRangeX;
+            const newTranslateY = (Math.random() - 0.5) * escapeRangeY;
+            
+            NAO_BUTTON.style.position = 'absolute';
+            NAO_BUTTON.style.left = '50%';
+            NAO_BUTTON.style.top = '50%';
+            
+            NAO_BUTTON.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px)`;
+            NAO_BUTTON.style.opacity = '1'; 
+            NAO_BUTTON.style.pointerEvents = 'auto'; 
+
+            NAO_BUTTON.textContent = "ÔLÉÉÉÉ!";
+            NAO_BUTTON.classList.add('nao-fugitivo-style');
+            
+            setTimeout(() => {
+                isFugindo = false;
+            }, 100); 
+        }
+
+        NAO_BUTTON.addEventListener('mouseover', moveNaoButton);
+        NAO_BUTTON.addEventListener('click', moveNaoButton); 
+
+
+        SIM_BUTTON.addEventListener('click', () => {
+            naoButtonCanMove = false; 
+            
+            NAO_BUTTON.style.display = 'none';
+            SIM_BUTTON.style.display = 'none';
+            
+            document.getElementById('final-question').style.display = 'none';
+            FINAL_BUTTONS_WRAPPER.style.display = 'none'; 
+            
+            SIM_FINAL_MESSAGE.style.display = 'block';
+            
+            clearInterval(particleInterval);
+            HEART_BG.querySelectorAll('.particle').forEach(p => p.remove());
+            setInterval(() => {
+                if (!document.hidden) {
+                    const particle = document.createElement('span');
+                    particle.classList.add('particle', 'heart');
+                    particle.innerHTML = '&#10084;';
+                    particle.style.left = `${Math.random() * 100}vw`;
+                    particle.style.fontSize = `${Math.random() * 30 + 20}px`;
+                    particle.style.opacity = 1;
+                    particle.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                    HEART_BG.appendChild(particle);
+                    setTimeout(() => particle.remove(), 5000);
+                }
+            }, 100); 
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            startParticleAnimation();
+            document.documentElement.style.setProperty('--current-heart-color', 'var(--color-primary)');
+        });
+    </script>
+</body>
+</html>
