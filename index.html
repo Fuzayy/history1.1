@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-M">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Um Presente Especial</title>
     <style>
@@ -146,6 +146,23 @@
             transform: scale(1.05);
             box-shadow: 0 0 15px var(--color-shadow-secondary), 0 0 25px var(--color-secondary);
         }
+        
+        /* NOVO: Estilo para o botão ÚLTIMO PASSO */
+        #final-whatsapp-btn {
+            /* Copiando a cor principal, mas usando 100% de largura no container final */
+            background-color: var(--color-primary);
+            width: 60%; /* Um pouco mais largo que os botões iniciais, para destaque */
+            max-width: 300px;
+            margin-top: 30px; /* Mais espaçamento para não ficar colado na mensagem */
+            box-shadow: 0 0 15px var(--color-shadow-primary);
+            font-size: 1.3rem;
+            display: none; /* Começa escondido */
+        }
+        #final-whatsapp-btn:hover {
+             background-color: var(--color-secondary);
+             box-shadow: 0 0 20px var(--color-shadow-secondary), 0 0 30px var(--color-secondary);
+        }
+
 
         /* ---------------------------------------------------- */
         /* A. Tela de Início (#start-screen) */
@@ -184,7 +201,8 @@
             position: absolute; /* Mantenha sempre absoluto */
             width: 100%;
             left: 0;
-            padding: 10px;
+            /* REMOVIDO: Padding aqui, a sombra está na imagem */
+            /* padding: 10px; */ 
             backface-visibility: hidden; 
             
             /* CENTRALIZAÇÃO PERMANENTE (Verticalmente) */
@@ -207,31 +225,37 @@
         }
 
         .carousel-item img {
-            width: 100%;
-            max-height: 70vh;
-            object-fit: contain; /* Garante que a imagem se encaixe sem cortar */
-            margin-bottom: 15px;
+            /* ** CHAVE DA CORREÇÃO: Usar max-width e max-height com width: auto ** */
+            max-width: 85%;    /* Limita a largura máxima da imagem (e da sombra) */
+            max-height: 60vh;  /* Limita a altura máxima da imagem (e da sombra) */
             
-            border-radius: 10px; /* Mantém o canto arredondado da imagem */
+            /* Garante que a imagem use a largura e altura intrínseca, respeitando o max-width/height */
+            width: auto;       
+            height: auto;      
+            
+            object-fit: contain; /* Garante que a imagem se encaixe sem cortar */
+            
+            /* ** CHAVE DA BORDA CORRETA: border-radius E box-shadow na IMAGEM ** */
+            border-radius: 15px; 
+            box-shadow: 0 0 8px 3px rgba(220, 20, 60, 0.6); /* Sombra principal na imagem (ajustada para ser mais "borda") */
             
             border: none; 
             padding: 0; 
             background-color: transparent; 
             transition: none; 
 
-            /* ALTERAÇÃO FINAL: Usando drop-shadow para a sombra acompanhar o conteúdo visível */
-            /* filter: drop-shadow(Offset-x Offset-y Blur-Radius Color) */
-            filter: drop-shadow(0 0 15px rgba(220, 20, 60, 0.6)); 
-            
-            /* REMOVIDO: box-shadow (agora substituído por filter) */
-            /* box-shadow: 0 0 15px rgba(220, 20, 60, 0.6); */
+            /* SEM FILTRO DE SOMBRA, APENAS BOX-SHADOW */
+            filter: none; 
         }
-
+        
         /* Estilo específico para a foto 7 */
         .carousel-item:nth-child(7) img {
-            /* ALTERAÇÃO FINAL: Usando drop-shadow para a foto 7 também */
-            filter: drop-shadow(0 0 15px rgba(0, 255, 0, 0.6)); /* Sombra verde limão */
+            /* Aplicamos a box-shadow verde diretamente na imagem 7 */
+            box-shadow: 0 0 8px 3px rgba(0, 255, 0, 0.6); 
         }
+        
+        /* Garantir que as outras tenham a sombra vermelha quando ativas (já coberto pelo .carousel-item img) */
+
 
         .caption {
             background-color: rgba(0, 0, 0, 0.7);
@@ -410,7 +434,9 @@
             width: 100%;
         }
         
+        /* NOVO: Garante que o SIM esteja sempre acima do NAO (que usa absolute na fuga) */
         #sim-btn {
+            z-index: 10; /* Valor alto para garantir prioridade de clique */
             background-color: var(--color-sim-btn); 
             box-shadow: 0 0 10px var(--color-shadow-green);
         }
@@ -479,7 +505,8 @@
             }
 
             .carousel-item img {
-                max-height: 60vh;
+                max-height: 50vh; /* Ajustado para telas menores também */
+                max-width: 95%; /* Ajustado para telas menores também */
             }
 
             #final-question {
@@ -502,6 +529,10 @@
             /* Ajuste para o botão INICIAR (e outros botões .btn) em telas pequenas */
             .btn {
                  width: 50%; /* Mantido em 50% para telas pequenas para não ficar minúsculo */
+            }
+            
+            #final-whatsapp-btn {
+                 width: 80%;
             }
         }
     </style>
@@ -568,15 +599,15 @@
         </div>
         <div class="text-slide">
             <h2 class="glow-text">Nossa Jornada</h2>
-            <p>Cada dia ao seu lado é uma nova descoberta e uma nova razão para agradecer. As dificuldades se tornam pequenas e as alegrias, gigantescas.</p>
+            <p>Cada dia ao seu lado é uma nova descoberta e uma nova razão para agradecer.</p>
         </div>
         <div class="text-slide">
             <h2 class="glow-text">Meu Amor</h2>
             <p>A nossa história é muito grande para ser contada em apenas 10 fotos, então...</p>
         </div>
         <div class="text-slide">
-            <h2 class="glow-text">O Próximo Passo</h2>
-            <p>Depois de tudo isso, só me resta fazer a pergunta que não sai da minha cabeça...</p>
+            <h2 class="glow-text">Só me resta fazer a pergunta que não sai da minha cabeça...</h2>
+            
         </div>
         <div class="text-slide">
             <h2>E se...<h2>
@@ -588,7 +619,7 @@
     </div>
 
     <div id="final" class="screen">
-        <h2 id="final-question">A gente dar um beijinho?<br>Só pra ver como vai ser!</h2>
+        <h2 id="final-question">A gente dar um beijinho?😘<br>Só pra ver como vai ser!😍</h2>
         
         <div class="final-buttons-wrapper">
             <button id="sim-btn" class="btn">SIM! ❤️</button>
@@ -598,6 +629,8 @@
         <h1 id="sim-final-message">
             ❤️É OFICIAL!❤️ <br> ❤️AMO VOCÊ!❤️
         </h1>
+        
+        <button id="final-whatsapp-btn" class="btn">ÚLTIMO PASSO 💬</button>
     </div>
 
     <script>
@@ -610,6 +643,7 @@
         const SIM_BUTTON = document.getElementById('sim-btn');
         const NAO_BUTTON = document.getElementById('nao-btn');
         const SIM_FINAL_MESSAGE = document.getElementById('sim-final-message');
+        const FINAL_WHATSAPP_BTN = document.getElementById('final-whatsapp-btn');
         const HEART_BG = document.getElementById('heart-bg');
         const SWIPE_INDICATOR = document.getElementById('swipe-indicator');
         const FINAL_BUTTONS_WRAPPER = document.querySelector('.final-buttons-wrapper'); 
@@ -647,29 +681,29 @@
 
         function showItem(index) {
              // Função auxiliar que só atualiza o tema e o indicador
-            updateTheme(index);
+             updateTheme(index);
         }
 
         function updateTheme(index) {
              const body = document.body;
              const root = document.documentElement; 
 
-            if (index === 6) { 
-                root.style.setProperty('--current-heart-color', 'var(--color-green-palmeiras)');
-                body.classList.add('green-theme'); 
-            } else {
-                root.style.setProperty('--current-heart-color', 'var(--color-primary)');
-                body.classList.remove('green-theme');
-            }
+             if (index === 6) { 
+                 root.style.setProperty('--current-heart-color', 'var(--color-green-palmeiras)');
+                 body.classList.add('green-theme'); 
+             } else {
+                 root.style.setProperty('--current-heart-color', 'var(--color-primary)');
+                 body.classList.remove('green-theme');
+             }
 
-            if (index === totalSlides - 1) {
-                SWIPE_INDICATOR.innerHTML = '&#10094; ARRASTE &#10095;';
-            } else if (index === 0) {
-                // MODIFICADO: Alterado de 'ARRASTE PARA CONTINUAR' para 'ARRASTE'
-                SWIPE_INDICATOR.innerHTML = 'ARRASTE &#10095;'; 
-            } else {
-                 SWIPE_INDICATOR.innerHTML = '&#10094; ARRASTE &#10095;';
-            }
+             // CORREÇÃO: Garante que "E se..." (último slide do array) tenha setas duplas.
+             if (index === 0) {
+                 // Primeiro slide: só avança
+                 SWIPE_INDICATOR.innerHTML = 'ARRASTE &#10095;'; 
+             } else {
+                 // Todos os slides restantes (incluindo o "E se...")
+                  SWIPE_INDICATOR.innerHTML = '&#10094; ARRASTE &#10095;';
+             }
         }
         
         // CÓDIGO DA TRANSIÇÃO CORRIGIDO
@@ -731,12 +765,12 @@
         }
         // FIM DO CÓDIGO DA TRANSIÇÃO CORRIGIDO
 
-
         function showFinalScreen() {
             CAROUSEL_CONTAINER.style.display = 'none';
             FINAL_SCREEN.style.display = 'flex';
             
             SWIPE_INDICATOR.style.display = 'none';
+            FINAL_WHATSAPP_BTN.style.display = 'none'; // Garante que o botão final comece escondido
 
             document.documentElement.style.setProperty('--current-heart-color', 'var(--color-primary)');
             document.body.classList.remove('green-theme');
@@ -745,6 +779,7 @@
             NAO_BUTTON.style.position = 'static';
             NAO_BUTTON.style.transform = 'none';
             NAO_BUTTON.textContent = initialNaoText;
+            NAO_BUTTON.classList.remove('nao-fugitivo-style');
         }
 
         /*
@@ -777,8 +812,8 @@
         
         CAROUSEL_CONTAINER.addEventListener('mouseup', e => {
             if (isDragging) {
-                 touchendX = e.screenX;
-                 handleGesture();
+                touchendX = e.screenX;
+                handleGesture();
             }
             isDragging = false;
         });
@@ -845,9 +880,11 @@
             
             const containerRect = FINAL_BUTTONS_WRAPPER.getBoundingClientRect();
             
+            // Define o range de fuga. Usamos 0.9 para dar uma margem de segurança.
             const escapeRangeX = containerRect.width * 0.9;
             const escapeRangeY = containerRect.height * 0.9;
 
+            // Calcula um novo deslocamento aleatório.
             const newTranslateX = (Math.random() - 0.5) * escapeRangeX;
             const newTranslateY = (Math.random() - 0.5) * escapeRangeY;
             
@@ -855,7 +892,8 @@
             NAO_BUTTON.style.left = '50%';
             NAO_BUTTON.style.top = '50%';
             
-            NAO_BUTTON.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px)`;
+            // O translate usa as coordenadas calculadas, mas aplica o -50% -50% no CSS para manter o botão centralizado no ponto
+            NAO_BUTTON.style.transform = `translate(calc(-50% + ${newTranslateX}px), calc(-50% + ${newTranslateY}px))`;
             NAO_BUTTON.style.opacity = '1'; 
             NAO_BUTTON.style.pointerEvents = 'auto'; 
 
@@ -870,6 +908,20 @@
         NAO_BUTTON.addEventListener('mouseover', moveNaoButton);
         NAO_BUTTON.addEventListener('click', moveNaoButton); 
 
+        // Função para abrir o WhatsApp com mensagem pré-definida
+        function openWhatsAppMessage() {
+            const phoneNumber = "5519984121959"; // Número de telefone com DDI/DDD
+            // A mensagem é codificada para URL. Use \n para quebras de linha.
+            const message = encodeURIComponent("Eu disse SIM! 🥰\nQuero meu beijinho, mo!🥹❤️"); 
+            
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        // Listener para o botão ÚLTIMO PASSO
+        FINAL_WHATSAPP_BTN.addEventListener('click', openWhatsAppMessage);
+
 
         SIM_BUTTON.addEventListener('click', () => {
             naoButtonCanMove = false; 
@@ -881,27 +933,31 @@
             FINAL_BUTTONS_WRAPPER.style.display = 'none'; 
             
             SIM_FINAL_MESSAGE.style.display = 'block';
+            FINAL_WHATSAPP_BTN.style.display = 'block'; // Mostra o novo botão!
             
+            // Para o efeito de "boom"
             clearInterval(particleInterval);
             HEART_BG.querySelectorAll('.particle').forEach(p => p.remove());
-            setInterval(() => {
-                if (!document.hidden) {
-                    const particle = document.createElement('span');
-                    particle.classList.add('particle', 'heart');
-                    particle.innerHTML = '&#10084;';
-                    particle.style.left = `${Math.random() * 100}vw`;
-                    particle.style.fontSize = `${Math.random() * 30 + 20}px`;
-                    particle.style.opacity = 1;
-                    particle.style.animationDuration = `${Math.random() * 2 + 3}s`;
-                    HEART_BG.appendChild(particle);
-                    setTimeout(() => particle.remove(), 5000);
-                }
-            }, 100); 
+            document.documentElement.style.setProperty('--current-heart-color', 'var(--color-primary)');
+            for (let i = 0; i < 50; i++) {
+                createParticle();
+            }
+            particleInterval = setInterval(createParticle, 100);
         });
 
+        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
+            // Garante que apenas o primeiro slide esteja visível no carregamento
+            CAROUSEL_ITEMS.forEach((item, index) => {
+                if (index !== 0) {
+                    item.style.display = 'none';
+                }
+            });
+
+            HEART_BG.style.visibility = 'visible'; 
             startParticleAnimation();
-            updateTheme(currentIndex); // Garantir que o tema inicial seja aplicado
+            
+            showItem(currentIndex); 
         });
     </script>
 </body>
