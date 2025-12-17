@@ -1020,7 +1020,7 @@
 
 <script>
 // Data em que o site sairá do ar
-const dataDesativacao = new Date("2026-01-01T00:00:00");
+const dataDesativacao = new Date("2025-12-18T00:00:00");
 
 function atualizarContador() {
     const agora = new Date().getTime();
@@ -1062,7 +1062,7 @@ function atualizarContador() {
     const contadorElement = document.getElementById("contador");
     if (contadorElement) {
         contadorElement.innerHTML =
-            `O site será desativado em: ${dias}d ${horas}h ${minutos}m ${segundos}s`;
+            `O site será desativado em:<br>${dias}d ${horas}h ${minutos}m ${segundos}s`;
     }
 }
 
@@ -1076,3 +1076,4 @@ atualizarContador();
 
 </body>
 </html>
+
